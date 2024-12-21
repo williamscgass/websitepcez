@@ -1,3 +1,3 @@
-pip install reflex
-reflex init
-reflex run
+pip install reflex  
+reflex init  
+reflex run  
