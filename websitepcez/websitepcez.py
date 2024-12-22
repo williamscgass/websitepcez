@@ -10,30 +10,74 @@ class State(rx.State):
 
     ...
 
+class TextfieldControlled(rx.State):
+    text: str = "Hello World!"
+    
+    @rx.event
+    def on_key_up(self, event):
+        if event == "Enter":
+            return self.redirect_to_results()
+    
+    @rx.event  
+    def redirect_to_results(self):
+        return rx.redirect("/results")
 
 def index() -> rx.Component:
     # Welcome Page (Index)
     return rx.container(
-        rx.color_mode.button(position="top-right"),
         rx.vstack(
-            rx.heading("Welcome to Reflex!", size="9"),
-            rx.text(
-                "Get started by editing ",
-                rx.code(f"{config.app_name}/{config.app_name}.py"),
-                size="5",
-            ),
-            rx.link(
-                rx.button("Check out our docs!"),
-                href="https://reflex.dev/docs/getting-started/introduction/",
-                is_external=True,
+            rx.heading(
+                "Welcome to Websitepcez!", 
+                size="9",
+                align="center",
+                ),
+            rx.hstack(
+                rx.input(
+                    placeholder="Paste a link to your prebuilt:",
+                    size="3",
+                    width="92%",
+                    value=TextfieldControlled.text,
+                    on_change=TextfieldControlled.set_text,
+                    on_key_up=TextfieldControlled.on_key_up,
+                ),
+                rx.button(
+                    "Go!",
+                    size="3",
+                    width="8%",
+                    on_click=TextfieldControlled.redirect_to_results,
+                    ),
+                width="80%",
             ),
             spacing="5",
+            align="center",
             justify="center",
             min_height="85vh",
-        ),
-        rx.logo(),
+        )
     )
-
+    
+results_heading_style: rx.style = {
+     "margin-top": "50px",
+ }   
+    
+def results() -> rx.Component:
+    # Results Page
+    return rx.container(
+        rx.vstack(
+            rx.heading(f"Check out what we found!", size="7"),
+            rx.text(
+                "Displaying results for: ",
+                TextfieldControlled.text,
+                size="3",
+                color_scheme="gray",
+                margin="0"
+            ),
+            style=results_heading_style,
+        ),
+        spacing="5",
+        justify="center",
+        min_height="85vh",
+    )
 
 app = rx.App()
 app.add_page(index)
+app.add_page(results)
