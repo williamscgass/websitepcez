@@ -1,15 +1,5 @@
 from pymongo import MongoClient
 from datetime import datetime
-<<<<<<< HEAD
-
-from dotenv import load_dotenv
-import os
-from backend.utils.helper import connect_to_mongo
-
-load_dotenv()
-
-def track_price_bestbuy(db_name, collection_name, model, product_title, price, url):
-=======
 import certifi
 from dotenv import load_dotenv
 import os
@@ -17,9 +7,8 @@ import os
 
 load_dotenv()
 
-def track_price(db_name, collection_name, model, product_title, price, url, 
+def track_price(db_name, collection_name, model, product_title, price, url, parts,
                 mongo_uri=os.getenv("mongo_uri")):
->>>>>>> ee438e8b9db29d1df14d91d63e86c87f7613779e
     """
     Track the price of a PC over time.
 
@@ -34,13 +23,7 @@ def track_price(db_name, collection_name, model, product_title, price, url,
     """
     try:
         # Connect to MongoDB
-<<<<<<< HEAD
-        client = connect_to_mongo()
-
-        
-=======
         client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
->>>>>>> ee438e8b9db29d1df14d91d63e86c87f7613779e
 
         # Access the database and collection
         db = client[db_name]
@@ -52,6 +35,9 @@ def track_price(db_name, collection_name, model, product_title, price, url,
             "$set": {
                 "product_title": product_title,
                 "url": url
+            },
+            "$set": {
+                "parts": parts
             },
             "$push": {
                 "price_history": {
@@ -70,9 +56,5 @@ def track_price(db_name, collection_name, model, product_title, price, url,
             return f"Record updated for model: {model}"
 
     except Exception as e:
-<<<<<<< HEAD
-        return f"Error tracking price: {e}"
-=======
         return f"Error tracking price: {e}"
 
->>>>>>> ee438e8b9db29d1df14d91d63e86c87f7613779e
