@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 import json
 from openai import OpenAI
 from urllib.parse import urlparse, urlunparse
-from backend.mongodb.write import track_price
+from backend.mongodb.write import track_price_bestbuy
+from backend.utils.helper import extract_model_with_bs4
 
 
 
@@ -35,36 +36,6 @@ def fetch_title_and_price_from_html(url):
     except Exception as e:
         print(f"Error fetching title and price: {e}")
         return None, None
-
-def extract_model_with_bs4(url):
-    """
-    Extract the model from the product webpage.
-
-    :param url: str, the URL of the product page
-    :return: str, the extracted model or an error message
-    """
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-    }
-
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise an exception for HTTP errors
-
-        # Parse the HTML content
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        # Locate the element with the class 'product-data-value'
-        model_element = soup.find('span', {'class': 'product-data-value'})
-        
-        # Extract and return the text
-        if model_element:
-            return model_element.text.strip()
-        else:
-            return "Model information not found."
-
-    except requests.exceptions.RequestException as e:
-        return f"Error fetching the URL: {e}"
 
 def extract_pc_parts_from_title_and_price(title, price):
     """
@@ -139,7 +110,7 @@ if title and price:
         pc_parts_and_price['model'] = extract_model_with_bs4(url)
         pc_parts_and_price['url'] = remove_url_fluff(url)
         print("success")
-        track_price("prebuilts","bestbuy",pc_parts_and_price["model"],pc_parts_and_price["title"],pc_parts_and_price['price'],
+        track_price_bestbuy("prebuilts","bestbuy",pc_parts_and_price["model"],pc_parts_and_price["title"],pc_parts_and_price['price'],
                     pc_parts_and_price['url'])
     else:
         print("Error: Expected a dictionary but got:", type(pc_parts_and_price))

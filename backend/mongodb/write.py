@@ -1,14 +1,13 @@
 from pymongo import MongoClient
 from datetime import datetime
-import certifi
+
 from dotenv import load_dotenv
 import os
-
+from backend.utils.helper import connect_to_mongo
 
 load_dotenv()
 
-def track_price(db_name, collection_name, model, product_title, price, url, 
-                mongo_uri=os.getenv("mongo_uri")):
+def track_price_bestbuy(db_name, collection_name, model, product_title, price, url):
     """
     Track the price of a PC over time.
 
@@ -23,7 +22,9 @@ def track_price(db_name, collection_name, model, product_title, price, url,
     """
     try:
         # Connect to MongoDB
-        client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
+        client = connect_to_mongo()
+
+        
 
         # Access the database and collection
         db = client[db_name]
@@ -54,4 +55,3 @@ def track_price(db_name, collection_name, model, product_title, price, url,
 
     except Exception as e:
         return f"Error tracking price: {e}"
-
