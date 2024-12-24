@@ -7,7 +7,7 @@ import os
 
 load_dotenv()
 
-def track_price(db_name, collection_name, model, product_title, price, url, 
+def track_price(db_name, collection_name, model, product_title, price, url, parts,
                 mongo_uri=os.getenv("mongo_uri")):
     """
     Track the price of a PC over time.
@@ -35,6 +35,9 @@ def track_price(db_name, collection_name, model, product_title, price, url,
             "$set": {
                 "product_title": product_title,
                 "url": url
+            },
+            "$set": {
+                "parts": parts
             },
             "$push": {
                 "price_history": {

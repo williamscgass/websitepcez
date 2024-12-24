@@ -130,17 +130,23 @@ def remove_url_fluff(url):
 
 
 # Example usage
-url = "https://www.bestbuy.com/site/hp-omen-35l-gaming-desktop-amd-ryzen-5-8500g-16gb-ddr5-memory-nvidia-geforce-rtx-4060-1tb-ssd-white-black/6589126.p?skuId=6589126"
+
+
+url = "https://www.bestbuy.com/site/cyberpowerpc-gamer-xtreme-gaming-desktop-intel-core-i7-14700f-16gb-memory-nvidia-geforce-rtx-4060-ti-8gb-2tb-ssd-black/6575073.p"
 title, price = fetch_title_and_price_from_html(url)
 print(title)
 if title and price:
     pc_parts_and_price = extract_pc_parts_from_title_and_price(title, price)
+    parts = {'processor': pc_parts_and_price['processor'], 'memory':pc_parts_and_price['memory'],'graphics_card':pc_parts_and_price['graphics_card'],
+             'storage':pc_parts_and_price['storage']}
+    del(pc_parts_and_price['color'])
+    print(pc_parts_and_price)
     if isinstance(pc_parts_and_price, dict):  # Ensure it's a dictionary
         pc_parts_and_price['model'] = extract_model_with_bs4(url)
         pc_parts_and_price['url'] = remove_url_fluff(url)
         print("success")
         track_price("prebuilts","bestbuy",pc_parts_and_price["model"],pc_parts_and_price["title"],pc_parts_and_price['price'],
-                    pc_parts_and_price['url'])
+                    pc_parts_and_price['url'], parts)
     else:
         print("Error: Expected a dictionary but got:", type(pc_parts_and_price))
 else:
